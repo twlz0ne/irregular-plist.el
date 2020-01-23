@@ -14,7 +14,7 @@ Utilities for irregular plist.
 
 ## Examples
 
-#### irregular-plist-member `(iplist &optional prop)`
+### irregular-plist-member `(iplist &optional prop)`
 
 ```elisp
 (irregular-plist-member '(:foo 1 2 :bar 3) :bar)
@@ -24,7 +24,7 @@ Utilities for irregular plist.
 ;; => (:foo 1 2 :bar 3)
 ```
 
-#### irregular-plist-get `(iplist prop)`
+### irregular-plist-get `(iplist prop)`
 
 ```elisp
 (irregular-plist-get '(:foo 1 2 :bar 3) :foo)
@@ -34,7 +34,7 @@ Utilities for irregular plist.
 ;; => 3
 ```
 
-#### irregular-plist-put `(iplist prop &rest vals)`
+### irregular-plist-put `(iplist prop &rest vals)`
 
 ```elisp
 (irregular-plist-put '(:foo 1 2 :bar 3) :foo 4 5)
@@ -47,7 +47,7 @@ Utilities for irregular plist.
 ;; => (:foo 1 2 :bar 3 :qux 6)
 ```
 
-#### irregular-plist-mapc `(func iplist)`
+### irregular-plist-mapc `(func iplist)`
 
 ```elisp
 (let (values)
@@ -58,7 +58,7 @@ Utilities for irregular plist.
 ;; => (1 2 3)
 ```
 
-#### irregular-plist-merge `(iplist1 iplist2)`
+### irregular-plist-merge `(iplist1 iplist2)`
 
 ```elisp
 (irregular-plist-merge '(:foo (1) 2 :bar 3)

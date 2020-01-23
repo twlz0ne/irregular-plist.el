@@ -105,7 +105,9 @@ If PROP is nil, return on first property.
     iplist))
 
 (defun irregular-plist-mapc (func iplist)
-  "Apply FUNC to each prop-values paire of IPLIST."
+  "Apply FUNC to each prop-values paire of IPLIST.
+
+FUNC takes a &rest parameter."
   (let (prop vals result)
     (mapc (lambda (it)
             (if (not prop)
@@ -122,7 +124,10 @@ If PROP is nil, return on first property.
     iplist))
 
 (defun irregular-plist-merge (iplist1 iplist2)
-  "Merge IPLIST2 into IPLIST1."
+  "Merge IPLIST2 into IPLIST1.
+
+If the input plists have the same props, the value for that prop in IPLIST1 will be
+overwriten by the value in IPLIST2."
   (if (not iplist1)
       iplist2
     (irregular-plist-mapc (lambda (key &rest vals)
