@@ -123,17 +123,14 @@ FUNC takes a &rest parameter."
     (apply func prop (reverse vals))
     iplist))
 
-(defun irregular-plist-merge (iplist1 iplist2)
-  "Merge IPLIST2 into IPLIST1.
-
-If the input plists have the same props, the value for that prop in IPLIST1 will be
-overwriten by the value in IPLIST2."
-  (if (not iplist1)
-      iplist2
+(defun irregular-plist-update (iplist iplist-from)
+  "Update IPLIST according to every key-value pair in IPLIST-FROM."
+  (if (not iplist)
+      iplist-from
     (irregular-plist-mapc (lambda (key &rest vals)
-                            (apply #'irregular-plist-put iplist1 key vals))
-                          iplist2)
-    iplist1))
+                            (apply #'irregular-plist-put iplist key vals))
+                          iplist-from)
+    iplist))
 
 (provide 'irregular-plist)
 

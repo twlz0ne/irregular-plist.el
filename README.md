@@ -10,7 +10,7 @@ Utilities for irregular plist.
 - [irregular-plist-gut](#irregular-plist-get-iplist-prop)                `(iplist prop)`
 - [irregular-plist-put](#irregular-plist-put-iplist-prop-rest-vals)      `(iplist prop &rest vals)`
 - [irregular-plist-mapc](#irregular-plist-mapc-func-iplist)              `(func iplist)`
-- [irregular-plist-merge](#irregular-plist-merge-iplist1-iplist2)        `(iplist1 iplist2)`
+- [irregular-plist-update](#irregular-plist-update-iplist1-iplist2)      `(iplist1 iplist2)`
 
 ## Examples
 
@@ -58,11 +58,11 @@ Utilities for irregular plist.
 ;; => (1 2 3)
 ```
 
-### irregular-plist-merge `(iplist1 iplist2)`
+### irregular-plist-update `(iplist1 iplist2)`
 
 ```elisp
-(irregular-plist-merge '(:foo (1) 2 :bar 3)
-                       '(:foo 4 5 6))
+(irregular-plist-update '(:foo (1) 2 :bar 3)
+                        '(:foo 4 5 6))
 ;; => (:foo 4 5 6 :bar 3)
 ```
 

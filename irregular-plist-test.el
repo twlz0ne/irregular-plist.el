@@ -51,11 +51,11 @@
 (ert-deftest irregular-plist-test-merge ()
   (let ((pl1 '(:foo 1 2 :bar 3))
         (pl2 '(:foo 4 5 :qux 6)))
-    (should (equal '(:foo 4 5 :bar 3 :qux 6) (irregular-plist-merge pl1 pl2))))
+    (should (equal '(:foo 4 5 :bar 3 :qux 6) (irregular-plist-update pl1 pl2))))
 
   (let ((pl1 nil)
         (pl2 '(:foo 4 5 :qux 6)))
-    (should (equal '(:foo 4 5 :qux 6) (irregular-plist-merge pl1 pl2)))))
+    (should (equal '(:foo 4 5 :qux 6) (irregular-plist-update pl1 pl2)))))
 
 (provide 'irregular-plist-test)
 
