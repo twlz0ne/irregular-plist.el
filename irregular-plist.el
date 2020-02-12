@@ -42,6 +42,8 @@
 
 ;;; Code:
 
+(require 'cl-lib)
+
 (defun irregular-plist-member (iplist &optional prop)
   "Return non-nil if IPLIST has the property KEY.
 
@@ -132,6 +134,15 @@ FUNC takes a &rest parameter."
                         iplist-from)
   iplist)
 
+(defun irregular-plist-merge (&rest iplists)
+  "Crete a new list that includes all the key/value pairs from IPLISTS.
+If multiple lists have the same key, the value in the last list is used."
+  (let ((merged (cl-copy-list '(0))))
+    (mapc (lambda (iplist)
+            (when iplist
+              (irregular-plist-update merged iplist)))
+          iplists)
+    (nthcdr 1 merged)))
 
 (provide 'irregular-plist)
 

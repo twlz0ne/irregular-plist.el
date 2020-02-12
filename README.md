@@ -11,6 +11,7 @@ Utilities for irregular plist.
 - [irregular-plist-put](#irregular-plist-put-iplist-prop-rest-vals)      `(iplist prop &rest vals)`
 - [irregular-plist-mapc](#irregular-plist-mapc-func-iplist)              `(func iplist)`
 - [irregular-plist-update](#irregular-plist-update-iplist1-iplist2)      `(iplist1 iplist2)`
+- [irregular-plist-merge](#irregular-plist-merge-rest-iplists)           `(&rest iplists)`
 
 ## Examples
 
@@ -64,5 +65,15 @@ Utilities for irregular plist.
 (irregular-plist-update '(:foo (1) 2 :bar 3)
                         '(:foo 4 5 6))
 ;; => (:foo 4 5 6 :bar 3)
+```
+
+### irregular-plist-merge (&rest iplists)
+
+```elisp
+(let* ((pl1 '(:foo 1 2 :bar 3 4))
+       (pl2 '(:foo 7 8 :qux 6))
+       (pl-new (irregular-plist-merge pl1 pl2)))
+  pl-new)
+;; => (:foo 7 8 :bar 3 4 :qux 6)
 ```
 
