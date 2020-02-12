@@ -23,6 +23,20 @@
 (when noninteractive
   (transient-mark-mode))
 
+(defmacro irregular-plist-test--put (expected _ind1 init _ind2 &rest input)
+  `(let* ((pl1 (if (symbolp ',init) nil ',init))
+          (pl-ret (irregular-plist-put pl1 ,@input)))
+     (should (equal pl-ret ',expected))
+     (should (equal pl1    ',expected))))
+
+(defmacro irregular-plist-test--update (expected _ind1 init _ind2 input)
+  `(let* ((pl1 (if (symbolp ',init) nil ',init))
+          (pl-ret (irregular-plist-update pl1 ',input)))
+     (should (equal pl-ret ',expected))
+     (should (equal pl1    ',expected))))
+
+;;;
+
 (ert-deftest irregular-plist-test-member ()
   (should (equal '(:bar 3)          (irregular-plist-member '(:foo 1 2 :bar 3) :bar)))
   (should (equal '(:foo 1 2 :bar 3) (irregular-plist-member '(:foo 1 2 :bar 3)     )))
@@ -35,29 +49,23 @@
   (should (equal nil    (irregular-plist-get '(:foo 1 2 :bar 3) :qux))))
 
 (ert-deftest irregular-plist-test-put ()
-  (should (equal '(:foo 4 5 :bar 3)        (irregular-plist-put '(:foo 1 2 :bar 3) :foo 4 5)))
-  (should (equal '(:foo 4 5 :bar 3)        (irregular-plist-put '(:foo     :bar 3) :foo 4 5)))
-  (should (equal '(:foo 1 2 :bar 4)        (irregular-plist-put '(:foo 1 2 :bar 3) :bar 4)))
-  (should (equal '(:foo 1 2 :bar 3 :qux 6) (irregular-plist-put '(:foo 1 2 :bar 3) :qux 6)))
-  (let* ((pl1 '())
-         (pl1-ret (irregular-plist-put pl1 :foo 4 5)))
-    (should (equal '(:foo 4 5) pl1-ret))
-    (should (equal '() pl1))))
+  (irregular-plist-test--put (:foo 4 5 :bar 3)        <= (:foo 1 2 :bar 3) ++ :foo 4 5)
+  (irregular-plist-test--put (:foo 4 5 :bar 3)        <= (:foo     :bar 3) ++ :foo 4 5)
+  (irregular-plist-test--put (:foo 1 2 :bar 4)        <= (:foo 1 2 :bar 3) ++ :bar 4)
+  (irregular-plist-test--put (:foo 1 2 :bar 3 :qux 6) <= (:foo 1 2 :bar 3) ++ :qux 6)
+  (irregular-plist-test--put (:qux 6)                 <= (               ) ++ :qux 6))
 
 (ert-deftest irregular-plist-test-mapc ()
   (let ((pl1 '(:foo 1 2 :bar 3))
         (pl2 '(:foo 4 5 :qux 6)))
     (irregular-plist-mapc (lambda (&rest key-vals)
-                            (apply #'irregular-plist-put pl1 key-vals))
+                            (apply #'irregular-plist--put pl1 key-vals))
                           pl2)
     (should (equal '(:foo 4 5 :bar 3 :qux 6) pl1))))
 
 (ert-deftest irregular-plist-test-update ()
-  (let* ((pl1 '(:foo 1 2 :bar 3))
-         (pl2 '(:foo 4 5 :qux 6))
-         (pl-ret (irregular-plist-update pl1 pl2)))
-    (should (equal '(:foo 4 5 :bar 3 :qux 6) pl-ret))
-    (should (equal '(:foo 4 5 :bar 3 :qux 6) pl1))))
+  (irregular-plist-test--update (:foo 4 5 :bar 3 :qux 6) <= (:foo 1 2 :bar 3) ++ (:foo 4 5 :qux 6))
+  (irregular-plist-test--update (:foo 4 5 :qux 6)        <= (               ) ++ (:foo 4 5 :qux 6)))
 
 (ert-deftest irregular-plist-test-merge ()
   (let* ((pl1 '(:foo 1 2 :bar 3))

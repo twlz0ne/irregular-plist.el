@@ -29,7 +29,7 @@
 ;; Example:
 ;; 
 ;; ```
-;; (irregular-plist-put
+;; (irregular-plist--put
 ;;  '(:foo (1) 2 :bar 3) :foo 4 5 6)
 ;; ;; => (:foo 4 5 6 :bar 3)
 ;; ```
@@ -85,28 +85,33 @@ If PROP is nil, return on first property.
         (reverse vals)
       (car vals))))
 
-(defun irregular-plist-put (iplist prop &rest vals)
+(defun irregular-plist--put (iplist prop &rest vals)
   "Change value in IPLIST of PROP to VALS.
 
-\(irregular-plist-put '(:foo 1 2 :bar 3) :foo 4 5)
+\(irregular-plist--put '(:foo 1 2 :bar 3) :foo 4 5)
 => (:foo 4 5 :bar 3)
 
-\(irregular-plist-put '(:foo 1 2 :bar 3) :bar 4)
+\(irregular-plist--put '(:foo 1 2 :bar 3) :bar 4)
 => (:foo 1 2 :bar 4)
 
-\(irregular-plist-put '(:foo 1 2 :bar 3) :qux 6)
+\(irregular-plist--put '(:foo 1 2 :bar 3) :qux 6)
 => (:foo 1 2 :bar 3 :qux 6)"
-  (if iplist
-      (let ((seq1 (irregular-plist-member iplist prop)))
-        (cond
-         (seq1
-          (let ((seq2 (irregular-plist-member (cdr seq1))))
-            (setf (cdr seq1) `(,@vals ,@seq2))))
-         (t
-          (let ((n (1- (length iplist))))
-            (setf (cdr (nthcdr n iplist)) `(,prop ,@vals)))))
-        iplist)
-    `(,prop ,@vals)))
+  (let ((seq1 (irregular-plist-member iplist prop)))
+    (cond
+     (seq1
+      (let ((seq2 (irregular-plist-member (cdr seq1))))
+        (setf (cdr seq1) `(,@vals ,@seq2))))
+     (t
+      (let ((n (1- (length iplist))))
+        (setf (cdr (nthcdr n iplist)) `(,prop ,@vals)))))
+    iplist))
+
+(defmacro irregular-plist-put! (iplist prop &rest vals)
+  `(if ,iplist
+       (funcall #'irregular-plist--put ,iplist ,prop ,@vals)
+     (setf ,iplist (list ,prop ,@vals))))
+
+(defalias 'irregular-plist-put 'irregular-plist-put!)
 
 (defun irregular-plist-mapc (func iplist)
   "Apply FUNC to each prop-values paire of IPLIST.
@@ -127,20 +132,28 @@ FUNC takes a &rest parameter."
     (apply func prop (reverse vals))
     iplist))
 
-(defun irregular-plist-update (iplist iplist-from)
-  "Update IPLIST according to every key-value pair in IPLIST-FROM."
+(defun irregular-plist--update (iplist iplist-from)
+  "Update IPLIST according to every key/value pair in IPLIST-FROM."
   (irregular-plist-mapc (lambda (key &rest vals)
-                          (apply #'irregular-plist-put iplist key vals))
+                          (apply #'irregular-plist--put iplist key vals))
                         iplist-from)
   iplist)
 
+(defmacro irregular-plist-update! (iplist iplist-from)
+  `(if ,iplist
+       (funcall #'irregular-plist--update ,iplist ,iplist-from)
+     (setf ,iplist ,iplist-from)))
+
+(defalias 'irregular-plist-update 'irregular-plist-update!)
+
 (defun irregular-plist-merge (&rest iplists)
   "Crete a new list that includes all the key/value pairs from IPLISTS.
+
 If multiple lists have the same key, the value in the last list is used."
   (let ((merged (cl-copy-list '(0))))
     (mapc (lambda (iplist)
             (when iplist
-              (irregular-plist-update merged iplist)))
+              (irregular-plist--update merged iplist)))
           iplists)
     (nthcdr 1 merged)))
 
