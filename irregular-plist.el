@@ -94,15 +94,17 @@ If PROP is nil, return on first property.
 
 \(irregular-plist-put '(:foo 1 2 :bar 3) :qux 6)
 => (:foo 1 2 :bar 3 :qux 6)"
-  (let ((seq1 (irregular-plist-member iplist prop)))
-    (cond
-     (seq1
-      (let ((seq2 (irregular-plist-member (cdr seq1))))
-        (setf (cdr seq1) `(,@vals ,@seq2))))
-     (t
-      (let ((n (1- (length iplist))))
-        (setf (nthcdr n iplist) `(,(nth n iplist) ,prop ,@vals)))))
-    iplist))
+  (if iplist
+      (let ((seq1 (irregular-plist-member iplist prop)))
+        (cond
+         (seq1
+          (let ((seq2 (irregular-plist-member (cdr seq1))))
+            (setf (cdr seq1) `(,@vals ,@seq2))))
+         (t
+          (let ((n (1- (length iplist))))
+            (setf (cdr (nthcdr n iplist)) `(,prop ,@vals)))))
+        iplist)
+    `(,prop ,@vals)))
 
 (defun irregular-plist-mapc (func iplist)
   "Apply FUNC to each prop-values paire of IPLIST.

@@ -38,7 +38,11 @@
   (should (equal '(:foo 4 5 :bar 3)        (irregular-plist-put '(:foo 1 2 :bar 3) :foo 4 5)))
   (should (equal '(:foo 4 5 :bar 3)        (irregular-plist-put '(:foo     :bar 3) :foo 4 5)))
   (should (equal '(:foo 1 2 :bar 4)        (irregular-plist-put '(:foo 1 2 :bar 3) :bar 4)))
-  (should (equal '(:foo 1 2 :bar 3 :qux 6) (irregular-plist-put '(:foo 1 2 :bar 3) :qux 6))))
+  (should (equal '(:foo 1 2 :bar 3 :qux 6) (irregular-plist-put '(:foo 1 2 :bar 3) :qux 6)))
+  (let* ((pl1 '())
+         (pl1-ret (irregular-plist-put pl1 :foo 4 5)))
+    (should (equal '(:foo 4 5) pl1-ret))
+    (should (equal '() pl1))))
 
 (ert-deftest irregular-plist-test-mapc ()
   (let ((pl1 '(:foo 1 2 :bar 3))
