@@ -127,12 +127,11 @@ FUNC takes a &rest parameter."
 
 (defun irregular-plist-update (iplist iplist-from)
   "Update IPLIST according to every key-value pair in IPLIST-FROM."
-  (if (not iplist)
-      iplist-from
-    (irregular-plist-mapc (lambda (key &rest vals)
-                            (apply #'irregular-plist-put iplist key vals))
-                          iplist-from)
-    iplist))
+  (irregular-plist-mapc (lambda (key &rest vals)
+                          (apply #'irregular-plist-put iplist key vals))
+                        iplist-from)
+  iplist)
+
 
 (provide 'irregular-plist)
 
