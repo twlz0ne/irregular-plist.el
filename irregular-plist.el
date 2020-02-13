@@ -29,8 +29,9 @@
 ;; Example:
 ;; 
 ;; ```
-;; (irregular-plist--put
-;;  '(:foo (1) 2 :bar 3) :foo 4 5 6)
+;; (let ((pl '(:foo (1) 2 :bar 3)))
+;;   (irregular-plist-put pl :foo 4 5 6)
+;;   pl)
 ;; ;; => (:foo 4 5 6 :bar 3)
 ;; ```
 
@@ -88,13 +89,16 @@ If PROP is nil, return on first property.
 (defun irregular-plist--put (iplist prop &rest vals)
   "Change value in IPLIST of PROP to VALS.
 
-\(irregular-plist--put '(:foo 1 2 :bar 3) :foo 4 5)
+The IPLIST must not be nil (i.e. '()).
+The IPLIST is modified by side effect.
+
+\(irregular-plist--put \\='(:foo 1 2 :bar 3) :foo 4 5)
 => (:foo 4 5 :bar 3)
 
-\(irregular-plist--put '(:foo 1 2 :bar 3) :bar 4)
+\(irregular-plist--put \\='(:foo 1 2 :bar 3) :bar 4)
 => (:foo 1 2 :bar 4)
 
-\(irregular-plist--put '(:foo 1 2 :bar 3) :qux 6)
+\(irregular-plist--put \\='(:foo 1 2 :bar 3) :qux 6)
 => (:foo 1 2 :bar 3 :qux 6)"
   (let ((seq1 (irregular-plist-member iplist prop)))
     (cond
@@ -107,6 +111,15 @@ If PROP is nil, return on first property.
     iplist))
 
 (defmacro irregular-plist-put! (iplist prop &rest vals)
+  "Change value in IPLIST of PROP to VALS.
+
+This macro is based on `irregular-plist--put' but accept empty IPLIST.
+
+\(let ((pl \\='(:foo 1 2))) (irregular-plist-put! pl :bar 3 4) pl)
+=> (:foo 1 2 :bar 3 4)
+
+\(let ((pl)) (irregular-plist-put! pl :bar 3 4) pl)
+=> (:bar 3 4)"
   `(if ,iplist
        (funcall #'irregular-plist--put ,iplist ,prop ,@vals)
      (setf ,iplist (list ,prop ,@vals))))
@@ -133,13 +146,34 @@ FUNC takes a &rest parameter."
     iplist))
 
 (defun irregular-plist--update (iplist iplist-from)
-  "Update IPLIST according to every key/value pair in IPLIST-FROM."
+  "Update IPLIST according to every key/value pair in IPLIST-FROM.
+
+The IPLIST must not be nil (i.e. '()).
+The IPLIST is modified by side effect.
+
+\(let ((pl \\='(:foo 1 2 :bar 3))) (irregular-plist--update pl \\='(:foo 4 5)) pl)
+=> (:foo 4 5 :bar 3)
+
+\(let ((pl \\='(:foo 1 2 :bar 3))) (irregular-plist--update pl \\='(:bar 4)) pl)
+=> (:foo 1 2 :bar 4)
+
+\(let ((pl \\='(:foo 1 2 :bar 3))) (irregular-plist--update pl \\='(:qux 6)) pl)
+=> (:foo 1 2 :bar 3 :qux 6)"
   (irregular-plist-mapc (lambda (key &rest vals)
                           (apply #'irregular-plist--put iplist key vals))
                         iplist-from)
   iplist)
 
 (defmacro irregular-plist-update! (iplist iplist-from)
+  "Update IPLIST according to every key/value pair in IPLIST-FROM.
+
+This macro is based on `irregular-plist--update' but accept empty IPLIST.
+
+\(let ((pl \\='(:foo 1 2))) (irregular-plist-update! pl \\='(:bar 3 4)) pl)
+=> (:foo 1 2 :bar 3 4)
+
+\(let ((pl)) (irregular-plist-update! pl \\='(:bar 3 4)) pl)
+=> (:bar 3 4)"
   `(if ,iplist
        (funcall #'irregular-plist--update ,iplist ,iplist-from)
      (setf ,iplist ,iplist-from)))

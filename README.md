@@ -38,13 +38,13 @@ Utilities for irregular plist.
 ### irregular-plist-put `(iplist prop &rest vals)`
 
 ```elisp
-(irregular-plist-put '(:foo 1 2 :bar 3) :foo 4 5)
+(let ((pl '(:foo 1 2 :bar 3))) (irregular-plist-put pl :foo 4 5) pl)
 ;; => (:foo 4 5 :bar 3)
 
-(irregular-plist-put '(:foo 1 2 :bar 3) :bar 4)
+(let ((pl '(:foo 1 2 :bar 3))) (irregular-plist-put pl :bar 4) pl)
 ;; => (:foo 1 2 :bar 4)
 
-(irregular-plist-put '(:foo 1 2 :bar 3) :qux 6)
+(let ((pl '(:foo 1 2 :bar 3))) (irregular-plist-put pl :qux 6) pl)
 ;; => (:foo 1 2 :bar 3 :qux 6)
 ```
 
@@ -61,9 +61,10 @@ Utilities for irregular plist.
 
 ### irregular-plist-update `(iplist1 iplist2)`
 
-```elisp
-(irregular-plist-update '(:foo (1) 2 :bar 3)
-                        '(:foo 4 5 6))
+``` elisp
+(let ((pl '(:foo (1) 2 :bar 3)))
+  (irregular-plist-update pl '(:foo 4 5 6))
+  pl)
 ;; => (:foo 4 5 6 :bar 3)
 ```
 
