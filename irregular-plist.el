@@ -176,7 +176,7 @@ This macro is based on `irregular-plist--update' but accept empty IPLIST.
 => (:bar 3 4)"
   `(if ,iplist
        (funcall #'irregular-plist--update ,iplist ,iplist-from)
-     (setf ,iplist ,iplist-from)))
+     (setf ,iplist (cl-copy-list ,iplist-from))))
 
 (defalias 'irregular-plist-update 'irregular-plist-update!)
 
@@ -184,12 +184,12 @@ This macro is based on `irregular-plist--update' but accept empty IPLIST.
   "Crete a new list that includes all the key/value pairs from IPLISTS.
 
 If multiple lists have the same key, the value in the last list is used."
-  (let ((merged (cl-copy-list '(0))))
+  (let ((merged '()))
     (mapc (lambda (iplist)
             (when iplist
-              (irregular-plist--update merged iplist)))
+              (irregular-plist-update! merged iplist)))
           iplists)
-    (nthcdr 1 merged)))
+    merged))
 
 (provide 'irregular-plist)
 

@@ -65,7 +65,13 @@
 
 (ert-deftest irregular-plist-test-update ()
   (irregular-plist-test--update (:foo 4 5 :bar 3 :qux 6) <= (:foo 1 2 :bar 3) ++ (:foo 4 5 :qux 6))
-  (irregular-plist-test--update (:foo 4 5 :qux 6)        <= (               ) ++ (:foo 4 5 :qux 6)))
+  (irregular-plist-test--update (:foo 4 5 :qux 6)        <= (               ) ++ (:foo 4 5 :qux 6))
+  (let* ((pl1 '())
+         (pl2 '(:foo 3 4 :bar 5))
+         (pl2-copy (cl-copy-list pl2))
+         (_ret1 (irregular-plist-update pl1 pl2))
+         (_ret2 (irregular-plist-update pl1 '(:foo 7 8 :qux 9))))
+    (should (equal pl2 pl2-copy))))
 
 (ert-deftest irregular-plist-test-merge ()
   (let* ((pl1 '(:foo 1 2 :bar 3))
