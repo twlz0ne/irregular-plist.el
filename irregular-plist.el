@@ -130,7 +130,7 @@ This macro is based on `irregular-plist--put' but accept empty IPLIST.
   "Apply FUNC to each prop-values paire of IPLIST.
 
 FUNC takes a &rest parameter."
-  (let (prop vals result)
+  (let (prop vals)
     (mapc (lambda (it)
             (if (not prop)
                 (if (keywordp it)
