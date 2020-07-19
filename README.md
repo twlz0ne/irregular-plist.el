@@ -7,7 +7,7 @@ Utilities for irregular plist.
 ## Functions
 
 - [irregular-plist-member](#irregular-plist-member-iplist-optional-prop) `(iplist &optional prop)`
-- [irregular-plist-gut](#irregular-plist-get-iplist-prop)                `(iplist prop)`
+- [irregular-plist-get](#irregular-plist-get-iplist-prop)                `(iplist prop)`
 - [irregular-plist-put](#irregular-plist-put-iplist-prop-rest-vals)      `(iplist prop &rest vals)`
 - [irregular-plist-mapc](#irregular-plist-mapc-func-iplist)              `(func iplist)`
 - [irregular-plist-update](#irregular-plist-update-iplist1-iplist2)      `(iplist1 iplist2)`
