@@ -191,6 +191,22 @@ If multiple lists have the same key, the value in the last list is used."
           iplists)
     merged))
 
+(defun irregular-plist-normalize (iplist)
+  "Convert IPLIST to a normal plist.
+
+\(irregular-plist-merge \\='(:foo 1 2 :bar 3))
+=> (:foo (1 2) :bar 3)"
+  (let ((normal-pl))
+    (irregular-plist-mapc
+     (lambda (key &rest vals)
+       (let ((new-pl
+              (pcase vals
+                (`((. ,rest)) `(,@normal-pl ,key ,rest))
+                (_            `(,@normal-pl ,key ,vals)))))
+         (when new-pl (setq normal-pl new-pl))))
+     iplist)
+    normal-pl))
+
 (provide 'irregular-plist)
 
 ;;; irregular-plist.el ends here

@@ -81,6 +81,16 @@
     (should (equal '(:foo 7 8 :bar 3 :qux 6) pl-ret))
     (should (equal '(:foo 1 2 :bar 3) pl1))))
 
+(ert-deftest irregular-plist-test-normalize ()
+  (let ((pl1 '(:foo 1 2   :bar 3))
+        (pl2 '(:foo nil   :bar 4))
+        (pl3 '(:foo ()    :bar 5))
+        (pl4 '(:foo (6 7) :bar 8)))
+    (should (equal (irregular-plist-normalize pl1) '(:foo (1 2) :bar 3)))
+    (should (equal (irregular-plist-normalize pl2) '(:foo nil   :bar 4)))
+    (should (equal (irregular-plist-normalize pl3) '(:foo nil   :bar 5)))
+    (should (equal (irregular-plist-normalize pl4) '(:foo (6 7) :bar 8)))))
+
 (provide 'irregular-plist-test)
 
 ;;; irregular-plist-test.el ends here
